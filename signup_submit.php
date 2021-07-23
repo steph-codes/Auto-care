@@ -14,7 +14,8 @@ if($check){
     $_SESSION['custid'] = $check;
 header('location:user_dashboard.php');
 }else{
-    header('location:index.php?msg=try again');
+    header('location:index.php?');
 }
 
+//  header('location:index.php?msg=try again');
 ?>

@@ -45,13 +45,35 @@ class Tech{
         return $data;
         
     }
-    public function get_pending($id){
+    public function tech_cancel_order($id){
         //write the query
+        $q="UPDATE customer_orders  SET ord_status ='cancelled' WHERE ord_status='pending' 
+        AND order_id = '$id'";
+        $result= $this->conn->query($q);
+        
+    }
+    public function tech_cancel_pending_order($id){
+        //write the query
+        $q="UPDATE customer_orders  SET ord_status ='cancelled' WHERE ord_status='accepted' 
+        AND order_id = '$id'";
+        $result= $this->conn->query($q);
+        
+    }
+    public function tech_accept_order($id){
+        //write the query
+        $q="UPDATE customer_orders  SET ord_status ='accepted' WHERE ord_status='pending' 
+        AND order_id = '$id'";
+        $result= $this->conn->query($q);
+        
+    }
+    //accepted orders go here
+    public function get_pending($id){
+        //write the query may add -> AND customer_orders.customer_id = '$id'
         $q="SELECT customer_orders.order_id,customer_orders.issues,customer_orders.address,
          customers.customer_fname,customers.customer_lname,
         customer_orders.request_date,customers.cust_contact 
         FROM customer_orders JOIN customers ON customer_orders.customer_id = customers.customer_id 
-        WHERE ord_status='pending'AND customer_orders.customer_id = '$id'";
+        WHERE ord_status='accepted'";
         $result= $this->conn->query($q);
         $row = array();
         while($data=$result->fetch_assoc()){
@@ -66,8 +88,8 @@ class Tech{
         customers.cust_contact,customer_orders.completion_date,customer_orders.issues,customer_orders.address
          FROM customer_orders 
         JOIN customers ON customer_orders.customer_id = customers.customer_id
-        WHERE ord_status='completed'AND customer_orders.customer_id = '$id'
-        ";//unclear
+        WHERE ord_status='completed'
+        ";//unclear AND customer_orders.customer_id = '$id'
         $result= $this->conn->query($q);
         $row = array();
         while($data=$result->fetch_assoc()){

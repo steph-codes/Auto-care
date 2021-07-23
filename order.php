@@ -67,7 +67,8 @@ $user_details = $obj->get_details($_SESSION['custid']);
 					<div class="row bg-light mt-3 mx-0 h-100 px-4 ">
 						<div class="col col-md-5 mt-5 px-5">
 							<h1 class="col col font-weight-lighter">Know where your <br>Technician is.</h1>
-							<h4 class="col col font-weight-lighter mt-1">Call Ade: +234807655879</h4>
+							<h4 class="col col font-weight-lighter mt-1">Call Engr <?php echo $user_details['tech_firstname']?> 
+							<?php echo $user_details['tech_contact']?></h4>
 							<!-- call :<?php echo $val['tech_firstname'] . "+234".$val['tech_contact']; ?> -->
 							<br>
 							<br>

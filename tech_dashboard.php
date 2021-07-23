@@ -3,13 +3,13 @@
 //session_start();
 
 include('Tech.php');
-// if(!isset($_SESSION['custid'])){
-//     header('location:tech_login.php');
-//   }
+
+//get appointment shows customer and customer orders
 
 $obj= new Tech;
 $col= $obj->get_appointment();
 
+//user details shows tech details
 $user_details = $obj->get_details($_SESSION['custid']);
 
 // echo '<pre>';
@@ -49,7 +49,7 @@ $user_details = $obj->get_details($_SESSION['custid']);
 
 					<h5 class="mt-2 ml-2 mb-5"><i class="fas fa-user-edit "></i>Hi,&nbsp;Engr <?php echo $user_details['tech_firstname']?></h5>
 
-					<p class="text-secondary"><i class="fas fa-user-check pr-3"></i>User ID:<?echo $user_details['technicians_id']?></a></p>
+					<p><a href="tech_appointment.php" class="text-secondary"><i class="fas fa-user-check pr-3"></i>Available Orders</a></p>
 					<p><a href="tech_pending.php" class="text-secondary"><i class="fas fa-toggle-on pr-3"></i>Pending Orders</a></p>
 					<p><a href="tech_completed.php" class="text-secondary"><i class="fas fa-align-left pr-4"></i>Completed Orders</a></p>
 					<p><a href="tech_profile.php" class="text-secondary"><i class="fas fa-cog pr-4  "></i>Edit Profile</a></p>
@@ -93,10 +93,11 @@ $user_details = $obj->get_details($_SESSION['custid']);
 						<td class="px-0"><?php echo $val['request_date']; ?></td>
 						<td class="px-0"><?php echo $val['issues']; ?></td>
 						<td  class="px-0">
-						<a class='btn-sm nav-bg text-white' href='#'>Accept</a>
+						<a class='btn-sm nav-bg text-white' href='tech_accept_order.php?order_id=<?php echo $val['order_id']?>'>Accept</a>
 						</td>
                         <td class="border-right  ">
-						<a class='btn-sm btn btn-outline-danger text-dark mr-4' href='#'>Cancel</a>
+						<a class='btn-sm btn btn-outline-danger text-dark mr-4' 
+						href='tech_cancel_order.php?order_id=<?php echo $val['order_id']?>'>Cancel</a>
 						</td>
 					</tr>
 				<?php
@@ -104,31 +105,7 @@ $user_details = $obj->get_details($_SESSION['custid']);
 	        	?><table>
 		
 						
-						<!-- <h2 class="col text-center font-weight-light nav-color display-4 my-3"> All Appointments</h2>
-					<div class="col bg-light text-center mt-3 h-100 ">
-						<p class="mr-5 mt-4 text-center pt-4"><b>You can see all appointments both scheduled and completed appointments here</b></p>
-
-            			<p class="ml-4 col  dashboard-bg p-2 col-md-11 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm btn-danger text-white ">Scheduled</button></p>
-
-
-            			<p class="ml-4  col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm btn-danger text-white ">Scheduled</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p>
-
-            			<p class="ml-4 col col-md-11 dashboard-bg p-2 pl-4"><b>Sam Idris</b>&nbsp;&nbsp;&nbsp; toyota camry 2009&nbsp;&nbsp;18:17:59:00  &nbsp;&nbsp;punctured tyre and malfunctioned AC coolant&nbsp;&nbsp;&nbsp;<i class="fas fa-phone-alt"></i>&nbsp;+234990745678<button type="button" class="btn ml-5 btn-sm nav-bg text-white">completed</button></p> -->
-					</div>
+						
                 </div>
                 </div>	
 					

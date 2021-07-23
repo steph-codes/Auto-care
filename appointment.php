@@ -88,7 +88,8 @@ $user_details = $obj->get_details($_SESSION['custid']);
 						<a class='btn-sm nav-bg  text-white' href='#'>unassigned</a>
 						</td>
                         <td class="border-right">
-						<a class='btn-sm btn-danger ' id="cancel" href="cancel_order.php">Cancel</a>						
+						<a class='btn-sm btn-danger ' id="cancel"
+						 href="cancel_order.php?order_id=<?php echo $val['order_id']?>">Cancel</a>						
 						
 						</td>
 						<!-- onclick="alert('<?php echo $val['order_id']?>')" -->

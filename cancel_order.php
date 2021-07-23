@@ -1,21 +1,11 @@
 <?php
-require('user.php');
-$obj=new user();
+//require('Orders.php');
+include ('user.php');
+$obj= new User();
 
 
-$user_details = $obj->get_details($_SESSION['custid']);
-$ord_id = $user_details['order_id'];
-//$col= $obj->cancel_order($ord_id);
-
-//header("Location:user_dashboard.php");
-
-echo"<pre>";
-print_r($user_details);
-echo"</pre>";
-
-echo $ord_id;
-
-
+$col= $obj->cancel_order($_GET['order_id']);
+header("Location:appointment.php?msg=<div class='alert alert-success'>order cancelled</div>")
 ?>
 
 		

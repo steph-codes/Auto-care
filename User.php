@@ -7,6 +7,109 @@ class User{
         session_start();
         $this->conn = new mysqli("localhost","root","","automobile_repair");
     }
+    public function initializePaystack( $order_id,$email, $amount){
+        $url = "https://api.paystack.co/transaction/initialize";
+        $callback = "http://localhost/Auto-care/Paystack/verifyPaystack.php";
+        $fields = [
+            'order_id' => "$order_id",
+            'email' => "$email",
+            'amount' => "$amount",
+            'callback_url' => $callback
+        ];
+        $fields_string = http_build_query($fields);//format parameters as query strings
+        //open connection
+        $ch = curl_init();//step1
+        
+        //set the url, number of POST vars, POST
+        //step2 setoptions
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);//converts them to query string that endpoint accepts postfield is the data ur sending
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            "Authorization: Bearer sk_test_67c2b4cb50d585d1992b576991862e17bdd9fb1e",//you insert ur saved token
+            "Cache-Control: no-cache",
+        ));//send array to curlopt_httpheader specific header
+        
+        //So that curl_exec returns the contents of the cURL; rather than echoing it
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        
+        //step 3 execute post
+        $response = curl_exec($ch);
+        
+    
+        $errors = curl_error($ch);
+        //step 4 close curl
+        curl_close($ch);
+        
+        if($errors){
+            $output = $errors;
+        }
+        $output =json_decode($response);
+
+        return $output;
+    }
+    function verifyPaystack($reference, $customer_id){
+        $url="https://api.paystack.co/transaction/verify/$reference";
+
+        //step1: initialize curl session
+        $curlsession = curl_init();
+        //step2:set  the url headers
+        curl_setopt($curlsession, CURLOPT_URL,$url);
+        curl_setopt($curlsession, CURLOPT_CUSTOMREQUEST,'GET');
+         //curlopt header has an array value, the bearer and test secret, specify cache control as well so it doesnt store the request
+        curl_setopt($curlsession, CURLOPT_HTTPHEADER, array(
+            "Authorization: Bearer sk_test_67c2b4cb50d585d1992b576991862e17bdd9fb1e",
+            "Cache-control: no-cache",
+        ));
+        curl_setopt($curlsession,CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curlsession, CURLOPT_SSL_VERIFYPEER, false); 
+        
+        //step:3 execute curl
+        $response = curl_exec($curlsession);
+        $errors = curl_error($curlsession);
+
+        //step4: close curlsession
+        curl_close($curlsession);
+
+        if($errors){
+            echo $errors;
+        }
+
+        //do whatever you want
+        //insert into subsrciption table
+        $result = json_decode($response);       
+
+
+        // echo "<pre>";
+        // print_r($response);
+        // echo "</pre>";
+
+        return $result;
+
+    }
+    public function insertPayment($customer_id,$order_id, $amount,$payment_status,$reference,$trans_date,$payment_mode){
+        
+        //format startdate
+        //$customer_id = $_SESSION['custid'];
+        $trans_date = date('Y-m-d h:i:s', strtotime($trans_date));
+        //write query
+        $q = "INSERT into Payment(customer_id,order_id,amount,payment_status,reference,trans_date,payment_mode
+        )
+        VALUES('$customer_id','$order_id','$amount', '$payment_status', '$reference',
+        '$trans_date', '$payment_mode')";
+        //run the query
+        //var_dump($q);
+        //exit();
+        if ($this->conn->query($q)==true) {
+            //redirect to success page
+            header("Location: http://localhost/Auto-care/Paystack/Payment_success.php");
+        } else {
+            echo $this->conn->error;
+        }
+    }
+
+    //next verify paystack transaction=
     public function login($email, $password){
         $encrypted=md5($password);
         $new= "SELECT * FROM customers WHERE cust_email='$email' AND cust_pwd='$encrypted'";
@@ -27,11 +130,7 @@ class User{
         $q="UPDATE customer_orders  SET ord_status ='cancelled' WHERE ord_status='pending' 
         AND order_id = '$id'";
         $result= $this->conn->query($q);
-        // if($result){
-        //     echo"Your order has been cancelled";
-        // }else{
-        //     "please contact Web admin";
-        // }
+        
     }
     public function update_profile($postarray,$id){
         // $postarray is the variable for $_POST used to call $_POST from here.
